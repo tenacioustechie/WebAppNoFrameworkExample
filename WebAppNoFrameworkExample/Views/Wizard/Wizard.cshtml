@@ -11,51 +11,62 @@
         <partial name="@Model.PartialView"/>
     </div>
     <div>
-        <input type="button" id="previous" value="previous" class="btn btn-secondary" />
-        <input type="button" id="next" value="next" class="btn btn-primary" />
+        <input type="button" onclick="javascript: movePreviousStep();" id="previous" value="previous" class="btn btn-secondary" />
+        <input type="button" onclick="javascript: moveNextStep();" id="next" value="next" class="btn btn-primary" />
     </div>
 </div>
 
 <script>
-    document.querySelector("#next").onclick = function() {
-        // Set up our HTTP request
-        var xhr = new XMLHttpRequest();
-        // Setup our listener to process completed requests
-        xhr.onload = function() {
+    function moveNextStep() {
+        // check if modern browser supports pushState or not
+        if (history.pushState) {
+            // Set up our HTTP request
+            var xhr = new XMLHttpRequest();
+            // Setup our listener to process completed requests
+            xhr.onload = function() {
 
-            // Process our return data
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // What do when the request is successful
-                console.log('success!', xhr);
-                document.querySelector("#wizardStepDiv").innerHTML = xhr.response;
+                // Process our return data
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    // What do when the request is successful
+                    console.log('success!', xhr);
+                    document.querySelector("#wizardStepDiv").innerHTML = xhr.response;
+                    history.pushState({}, "Step 2", "/Wizard/Step2");
 
-            } else {
-                console.log('The request failed!');
-            }
-        };
-        //xhr.body = data: { id: 'Step1' }
-        xhr.open('GET', '/Wizard/WizardStep2');
-        xhr.send();
-    };
+                } else {
+                    console.log('The request failed!');
+                }
+            };
+            //xhr.body = data: { id: 'Step1' }
+            xhr.open('GET', '/Wizard/WizardStep2');
+            xhr.send();
+        } else {
+            location.href = '/Wizard/Step2';
+        }
+    }
 
-    document.querySelector("#previous").onclick = function () {
-        // Set up our HTTP request
-        var xhr = new XMLHttpRequest();
-        // Setup our listener to process completed requests
-        xhr.onload = function () {
+    function movePreviousStep() {
+        if (history.pushState) {
+            // Set up our HTTP request
+            var xhr = new XMLHttpRequest();
+            // Setup our listener to process completed requests
+            xhr.onload = function() {
 
-            // Process our return data
-            if (xhr.status >= 200 && xhr.status < 300) {
-                // What do when the request is successful
-                console.log('success!', xhr);
-                document.querySelector("#wizardStepDiv").innerHTML = xhr.response;
+                // Process our return data
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    // What do when the request is successful
+                    console.log('success!', xhr);
+                    document.querySelector("#wizardStepDiv").innerHTML = xhr.response;
+                    history.pushState({}, "Step 1", "/Wizard/Step1");
 
-            } else {
-                console.log('The request failed!');
-            }
-        };
-        //xhr.body = data: { id: 'Step1' }
-        xhr.open('GET', '/Wizard/WizardStep1');
-        xhr.send();
-    };
+                } else {
+                    console.log('The request failed!');
+                }
+            };
+            //xhr.body = data: { id: 'Step1' }
+            xhr.open('GET', '/Wizard/WizardStep1');
+            xhr.send();
+        } else {
+            location.href = '/Wizard/Step1';
+        }
+    }
 </script>
